@@ -1,14 +1,14 @@
 
 import './App.css';
 import Home from './Home/Home';
-import FetchData from './fetchData/fetchData';
+// import fetchDataContext from './fetchData/fetchDataContext';
 
 function App() {
   
   return (
     <>
       <h1>Learn React</h1> 
-      <FetchData />
+      {/* <fetchDataContext /> */}
       <Home />
     </>
         
