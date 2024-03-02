@@ -7,7 +7,7 @@ function App() {
   
   return (
     <>
-      <h1>Learn React</h1> 
+      {/* <h1>Learn React</h1>  */}
       {/* <fetchDataContext /> */}
       <Home />
     </>

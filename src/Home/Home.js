@@ -4,12 +4,11 @@ import { useWeatherData } from "../fetchData/fetchDataContext";
 function Home(){
     
     const [inputCity, setInputCity]= useState("");
-    const {city, setCity, weatherData} = useWeatherData();
+    const {city, setCity, weatherData, aqiData} = useWeatherData();
     const cityRef=useRef("");
 
     function handleChange(event){
         setInputCity(event.target.value);
-        
     }
 
     function handleSearch(){
@@ -20,10 +19,11 @@ function Home(){
 
     return(
         <>
-            <h3>I'm Home.</h3>
+            
             <input type="text" placeholder="Enter city" ref={cityRef} value={inputCity} onChange={handleChange}/>
             <button onClick={handleSearch}> Search </button>
-            { weatherData && <h2>Data for city found.</h2> }
+            { weatherData && <h2>Data for city weather found.</h2> }
+            {aqiData && <h2>Data for city AQI found.</h2> }
         </>
     )
 }
