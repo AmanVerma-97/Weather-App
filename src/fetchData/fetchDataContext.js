@@ -1,5 +1,12 @@
 //using Context API.
 import { createContext, useContext, useEffect, useState} from "react";
+import image1 from '../images/clear-evening-sky.jpg';
+import image2 from '../images/fog-night.jpg';
+import image3 from '../images/lightning-night-rain.jpg';
+import image4 from '../images/winter-snowfall.jpg';
+import image5 from '../images/clouds.jpg';
+import image6 from '../images/rainy-day.jpg';
+import image7 from '../images/fog-day.jpg';
 
 const weatherContext=createContext();
 
@@ -12,6 +19,7 @@ function FetchDataContext(props) {
     const [city,setCity] = useState("");
     const [weatherData,setWeatherData] = useState(null);
     const [aqiData, setAqiData]= useState(null);
+    const [background, setBackground]=useState(null);
     
     const {children}=props; //all that use weatherContext.
 
@@ -27,10 +35,11 @@ function FetchDataContext(props) {
         try {
           const response = await fetch(url, options);
           if (!response.ok) {
+            setAqiData(null);
             throw new Error(`Error fetching aqi data: ${response.status}`);
           }
           const AQIData = await response.json();
-          console.log("aqi",AQIData);
+        //   console.log("aqi",AQIData);
           setAqiData(AQIData);
 
         } catch (error) {
@@ -45,11 +54,13 @@ function FetchDataContext(props) {
         try {
             const response= await fetch(url);
             if(!response.ok){
+                setWeatherData(null);
                 throw new Error("Couldn't fetch city data");
             }
             const data= await response.json();
             console.log("weather:",data);
             setWeatherData(data); 
+            setCity(data.name);
 
         } catch (error) {
             console.log(error);
@@ -62,12 +73,43 @@ function FetchDataContext(props) {
             fetchCurrentAQI(city.toUpperCase());
         }
         
-    },[city])
+    },[city]);
+
+    useEffect(()=>{
+        if(weatherData){
+            let url;
+            const mainWeather = weatherData.weather[0].main;
+
+            if(mainWeather==="Clear"){
+                url=image1;
+            }
+            else if(mainWeather==="Thunderstorm"){
+                url=image3;
+            }
+            else if(mainWeather==="Rain"){
+                url=image6;
+            }
+            else if(mainWeather==="Snow"){
+                url=image4;
+            }
+            else if(mainWeather==="Haze"){
+                url=image2;
+            }
+            else if(mainWeather==="Clouds"){
+                url=image5;
+            }
+            else{
+                url=image7;
+            }
+
+            setBackground(url);
+        }
+    },[weatherData]);
 
     return(
         <>
             {/* <h3> I'am fetchData.</h3> */}
-            <weatherContext.Provider value={{aqiData, city, setCity, weatherData}}>
+            <weatherContext.Provider value={{aqiData, city, setCity, weatherData, background}}>
                 {children}
             </weatherContext.Provider>
         </>
