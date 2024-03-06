@@ -1,12 +1,13 @@
 //using Context API.
 import { createContext, useContext, useEffect, useState} from "react";
-import image1 from '../images/clear-evening-sky.jpg';
-import image2 from '../images/fog-night.jpg';
-import image3 from '../images/lightning-night-rain.jpg';
-import image4 from '../images/winter-snowfall.jpg';
-import image5 from '../images/clouds.jpg';
-import image6 from '../images/rainy-day.jpg';
-import image7 from '../images/fog-day.jpg';
+// import image1 from '../images/clear-day-sky.jpg';
+// import image2 from '../images/fog-night.jpg';
+// import image3 from '../images/lightning-night-rain.jpg';
+// import image4 from '../images/winter-snowfall.jpg';
+// import image5 from '../images/clouds.jpg';
+// import image6 from '../images/rainy-day.jpg';
+// import image7 from '../images/fog-day.jpg';
+
 
 const weatherContext=createContext();
 
@@ -19,8 +20,8 @@ function FetchDataContext(props) {
     const [city,setCity] = useState("");
     const [weatherData,setWeatherData] = useState(null);
     const [aqiData, setAqiData]= useState(null);
-    const [background, setBackground]=useState(null);
-    
+    // const [background, setBackground]=useState(null);
+    const [error,setError]=useState(false);
     const {children}=props; //all that use weatherContext.
 
     async function fetchCurrentAQI(city) {
@@ -41,9 +42,10 @@ function FetchDataContext(props) {
           const AQIData = await response.json();
         //   console.log("aqi",AQIData);
           setAqiData(AQIData);
-
+          setError(false);
         } catch (error) {
-          console.error('Error:', error);
+        //   console.error('Error:', error);
+          setError(true);
         }
       }
 
@@ -58,12 +60,14 @@ function FetchDataContext(props) {
                 throw new Error("Couldn't fetch city data");
             }
             const data= await response.json();
-            console.log("weather:",data);
+            // console.log("weather:",data);
             setWeatherData(data); 
             setCity(data.name);
+            setError(false);
 
         } catch (error) {
-            console.log(error);
+            // console.log(error);
+            setError(true);
         }
     }
 
@@ -75,41 +79,41 @@ function FetchDataContext(props) {
         
     },[city]);
 
-    useEffect(()=>{
-        if(weatherData){
-            let url;
-            const mainWeather = weatherData.weather[0].main;
+    // useEffect(()=>{ //to set background image according to main weather 
+    //     if(weatherData){
+    //         let url;
+    //         const mainWeather = weatherData.weather[0].main;
 
-            if(mainWeather==="Clear"){
-                url=image1;
-            }
-            else if(mainWeather==="Thunderstorm"){
-                url=image3;
-            }
-            else if(mainWeather==="Rain"){
-                url=image6;
-            }
-            else if(mainWeather==="Snow"){
-                url=image4;
-            }
-            else if(mainWeather==="Haze"){
-                url=image2;
-            }
-            else if(mainWeather==="Clouds"){
-                url=image5;
-            }
-            else{
-                url=image7;
-            }
+    //         if(mainWeather==="Clear"){
+    //             url=image1;
+    //         }
+    //         else if(mainWeather==="Thunderstorm"){
+    //             url=image3;
+    //         }
+    //         else if(mainWeather==="Rain"){
+    //             url=image6;
+    //         }
+    //         else if(mainWeather==="Snow"){
+    //             url=image4;
+    //         }
+    //         else if(mainWeather==="Haze"){
+    //             url=image2;
+    //         }
+    //         else if(mainWeather==="Clouds"){
+    //             url=image5;
+    //         }
+    //         else{
+    //             url=image7;
+    //         }
 
-            setBackground(url);
-        }
-    },[weatherData]);
+    //         setBackground(url);
+    //     }
+    // },[weatherData]);
 
     return(
         <>
             {/* <h3> I'am fetchData.</h3> */}
-            <weatherContext.Provider value={{aqiData, city, setCity, weatherData, background}}>
+            <weatherContext.Provider value={{aqiData, city, setCity, weatherData, error, setError, setWeatherData, setAqiData}}>
                 {children}
             </weatherContext.Provider>
         </>
