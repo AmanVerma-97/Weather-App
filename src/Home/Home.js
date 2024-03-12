@@ -5,9 +5,39 @@ import { Link } from "react-router-dom";
 function Home(){
     
     const [inputCity, setInputCity]= useState("");
-    const {city, setCity, weatherData, aqiData, error} = useWeatherData();
+    const {setCity, weatherData, aqiData, error} = useWeatherData();
     const [aqiColor, setAqiColor]= useState(null);
+    const [theme, setTheme]=useState(null);
     const cityRef=useRef("");
+
+    //to switch between light and dark themes
+
+    // 1.On initial render theme will be same as theme on user's computer
+    useEffect(()=>{
+        if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+            setTheme("dark");
+        }
+        else{
+            setTheme("light");
+        }
+    },[])
+     
+    // 2. To switch themes
+    useEffect(()=>{
+        if(theme==="dark"){
+            document.documentElement.classList.add("dark");
+        }
+        else{
+            document.documentElement.classList.remove("dark");
+        }
+    },[theme])
+
+    
+    const handleThemeSwitch=()=>{
+        setTheme(theme==="dark"? "light" : "dark");
+    }
+
+    //Set city name for API fetch.
 
     function handleChange(event){
         setInputCity(event.target.value);
@@ -19,6 +49,7 @@ function Home(){
         cityRef.current.focus();
     }
 
+    //Convert time received from API in local time for that zone.
     function convertTimestamp(timestamp,timezone) {
         const sunDate= new Date((timestamp+timezone)*1000 );
         let sunHours=sunDate.getHours();
@@ -47,6 +78,8 @@ function Home(){
         return (`${sunHours}:${sunMinutes}`);
       }
 
+
+      //set AQi color to show level of AQI
       useEffect(()=>{
 
         if(aqiData){
@@ -77,46 +110,54 @@ function Home(){
 
     return(
         <>
-        {error ? <Link to={'/err'}> <button class="bg-slate-600 text-yellow-500 font-bold p-2 rounded-md block m-auto mt-20">
+        { error ? <Link to="error"> <button class="bg-slate-600 text-yellow-500 font-bold p-2 rounded-md block m-auto mt-20">
             <span class="text-red-500">Error.</span> Click to see details </button> </Link> :
 
         // Outermost div
         <div id="outermost" class="bg-gradient-to-r from-cyan-500 via-teal-300 to-blue-500 font-medium font-serif h-screen w-dvw
-                    dark:bg-gradient-to-r dark:from-slate-950 dark:via-slate-800 dark:to-slate-900 dark:text-white">
+                    dark:bg-gradient-to-r dark:from-slate-950 dark:via-grey-800 dark:to-slate-900 dark:text-white">
 
-                        {/* Search bar */}
+            {/* Search bar */}
             <div class="m-auto p-3 flex flex-col md:flex-row items-center gap-4 w-fit bg-transparent shadow-lg">
                 <div>
-                    <input type="text" class="bg-blue-200 p-2 placeholder-slate-500 font rounded min-w-60 w-80 text-center" 
+                    <input type="text" class="bg-blue-200 p-2 placeholder-slate-500 font rounded w-60 md:w-80 text-center dark:text-black dark:bg-slate-100" 
                     placeholder="Enter city" ref={cityRef} value={inputCity} onChange={handleChange} required/>
                     
                 </div>
                 <div>
                     <button onClick={handleSearch} 
-                    class="bg-slate-400 w-80 sm:w-60 md:w-auto h-auto rounded p-2
-                     hover:bg-slate-700 hover:text-white hover:outline-blue-300 hover:outline-2 hover:outline"> Search </button>
+                    class="bg-slate-400 w-60 md:w-auto h-auto rounded p-2
+                     hover:bg-slate-700 hover:text-white hover:outline-blue-300 hover:outline-2 hover:outline
+                     dark:text-black"> Search </button>
                 </div>
-            
+            </div>
+
+            {/* Light Mode/ Dark Mode */}
+            <div class="absolute top-4 right-6 h-auto w-6 border-2 border-cyan-700 dark:border-gray-500 rounded-md flex justify-center">
+                <button class="bg-transparent m-auto" onClick={handleThemeSwitch}>
+                    {theme==="dark"? <img src="https://cdn-icons-png.flaticon.com/128/3073/3073665.png" alt="light-mode" class="h-4 w-4 inline"/>
+                                   : <img src="https://cdn-icons-png.flaticon.com/128/1812/1812660.png" alt="dark-mode" class="h-4 w-4 inline"/> }
+                </button>
             </div>
 
             {/* Displaying data if API fetch success */}
             { weatherData && aqiData && 
             <div class="bg-transparent h-auto w-11/12 m-auto  mt-2 flex flex-col items-center gap-6 shadow-xl
-            md:w-6/12 md:m-auto md:mt-12">
+            md:w-6/12 md:m-auto md:mt-12 dark:shadow-lg dark:shadow-white">
                 <div> <img src="https://cdn-icons-png.flaticon.com/128/562/562511.png" alt="city" class="inline h-8 w-8"/> 
-                    <h3 class="font-extrabold inline"> {city}</h3></div>
+                    <h3 class="font-extrabold inline"> {weatherData.name}</h3></div>
 
                 <div> <h1 class="font-extrabold text-4xl"> {weatherData.main.temp} &deg;C </h1> </div>
 
                 <div><h3 class="font-extrabold"> {weatherData.weather[0].main} </h3></div>
 
-                <div class="font-bold text-lg"> <img src="https://cdn-icons-png.flaticon.com/128/4747/4747661.png" alt="mask" class="inline h-8 w-8"/> 
+                <div class="font-bold text-lg"> <img src="https://cdn-icons-png.flaticon.com/128/3778/3778496.png" alt="mask" class="inline h-8 w-8"/> 
                 AQI <span id="aqi" className={aqiColor}> {aqiData.overall_aqi} </span> </div>
             </div>}
 
             {weatherData && aqiData && 
             <div class="bg-transparent h-auto w-11/12 mt-8 m-auto flex flex-wrap gap-4 justify-between items-center p-2 font-mono shadow-xl 
-            md:flex-row md:w-10/12 md:m-auto md:mt-12">
+            md:flex-row md:w-10/12 md:m-auto md:mt-12 dark:shadow-lg dark:shadow-white">
                 <div class="flex gap-2 w-1/3 sm:w-1/4 md:w-auto"> <img src="https://cdn-icons-png.flaticon.com/128/4851/4851827.png" class="h-8 w-8 inline" alt="min-temp"/> 
                 {weatherData.main.temp_min} &deg;C</div>
 
