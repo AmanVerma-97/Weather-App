@@ -13,6 +13,7 @@ function Home(){
     //to switch between light and dark themes
 
     // 1.On initial render theme will be same as theme on user's computer
+     //1 A. TO SWITCH TO USER'S THEME WHEN THEY CHANGE IT
     useEffect(()=>{
         if(window.matchMedia('(prefers-color-scheme: dark)').matches){
             setTheme("dark");
@@ -32,9 +33,9 @@ function Home(){
         }
     },[theme])
 
-    
+   
     const handleThemeSwitch=()=>{
-        setTheme(theme==="dark"? "light" : "dark");
+        setTheme(theme==="dark"? "light" : "dark"); 
     }
 
     //Set city name for API fetch.
@@ -120,7 +121,8 @@ function Home(){
             {/* Search bar */}
             <div class="m-auto p-3 flex flex-col md:flex-row items-center gap-4 w-fit bg-transparent shadow-lg">
                 <div>
-                    <input type="text" class="bg-blue-200 p-2 placeholder-slate-500 font rounded w-60 md:w-80 text-center dark:text-black dark:bg-slate-100" 
+                    <input type="text" class="bg-blue-200 p-2 placeholder-slate-500 font rounded w-60 md:w-80 text-center
+                     dark:text-black dark:bg-slate-200 dark:border-gray-500 dark:hover:border-blue-300 dark:border-2" 
                     placeholder="Enter city" ref={cityRef} value={inputCity} onChange={handleChange} required/>
                     
                 </div>
