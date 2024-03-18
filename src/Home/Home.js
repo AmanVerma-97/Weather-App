@@ -164,7 +164,7 @@ function Home(){
                 {weatherData.main.temp_min} &deg;C</div>
 
                 <div class="flex gap-2 w-1/3 sm:w-1/4 md:w-auto"> <img  src="https://cdn-icons-png.flaticon.com/128/3236/3236862.png" class="h-8 w-8 inline" alt="max-temp"/> 
-                {weatherData.main.temp_max} &deg;C</div>
+                {weatherData.main.temp_max} &deg;C </div>
 
                 <div class="flex gap-2 w-1/3 sm:w-1/4 md:w-auto"> <img src="https://cdn-icons-png.flaticon.com/128/3175/3175147.png" class="h-8 w-8 inline" alt="sunrise"/>
                 {convertTimestamp(weatherData.sys.sunrise, weatherData.timezone)} </div>
