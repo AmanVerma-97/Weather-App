@@ -146,7 +146,7 @@ function Home(){
             {/* Displaying data if API fetch success */}
             { weatherData && aqiData && 
             <div class="bg-transparent h-auto w-11/12 m-auto  mt-2 flex flex-col items-center gap-6 shadow-xl shadow-gray-900/50
-            md:w-6/12 md:m-auto md:mt-12 dark:shadow-lg dark:shadow-slate-100/50">
+            md:w-6/12  xl:w-4/12 md:m-auto md:mt-12 dark:shadow-lg dark:shadow-slate-100/50">
                 <div> <img src="https://cdn-icons-png.flaticon.com/128/562/562511.png" alt="city" class="inline h-8 w-8"/> 
                     <h3 class="font-extrabold inline"> {weatherData.name}</h3></div>
 
@@ -160,7 +160,7 @@ function Home(){
 
             {weatherData && aqiData && 
             <div class="bg-transparent h-auto w-11/12 mt-8 m-auto flex flex-wrap gap-4 justify-between items-center p-2 font-mono shadow-xl shadow-gray-900/50 
-            md:flex-row md:w-10/12 md:m-auto md:min-h-24 md:mt-12 dark:shadow-lg dark:shadow-slate-100/50">
+            md:flex-row md:w-10/12 xl:w-8/12 md:m-auto md:min-h-24 md:mt-12 dark:shadow-lg dark:shadow-slate-100/50">
                 <div class="flex gap-2 w-1/3 sm:w-1/4 md:w-auto"> <img src="https://cdn-icons-png.flaticon.com/128/4851/4851827.png" class="h-8 w-8 inline" alt="min-temp"/> 
                 {weatherData.main.temp_min} &deg;C</div>
 
