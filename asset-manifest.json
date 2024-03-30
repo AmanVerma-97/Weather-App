@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/AmanVerma-97/Weather-App/static/css/main.c1183882.css",
-    "main.js": "/AmanVerma-97/Weather-App/static/js/main.8ff7f80a.js",
-    "index.html": "/AmanVerma-97/Weather-App/index.html",
-    "main.c1183882.css.map": "/AmanVerma-97/Weather-App/static/css/main.c1183882.css.map",
-    "main.8ff7f80a.js.map": "/AmanVerma-97/Weather-App/static/js/main.8ff7f80a.js.map"
+    "main.css": "/Weather-App/static/css/main.c1183882.css",
+    "main.js": "/Weather-App/static/js/main.8ff7f80a.js",
+    "index.html": "/Weather-App/index.html",
+    "main.c1183882.css.map": "/Weather-App/static/css/main.c1183882.css.map",
+    "main.8ff7f80a.js.map": "/Weather-App/static/js/main.8ff7f80a.js.map"
   },
   "entrypoints": [
     "static/css/main.c1183882.css",
