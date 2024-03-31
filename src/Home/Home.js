@@ -14,14 +14,14 @@ function Home(){
 
     // 1.On initial render theme will be same as theme on user's computer
      //1 A. TO SWITCH TO USER'S THEME WHEN THEY CHANGE IT
-    useEffect(()=>{
-        if(window.matchMedia('(prefers-color-scheme: dark)').matches){
-            setTheme("dark");
-        }
-        else{
-            setTheme("light");
-        }
-    },[])
+    // useEffect(()=>{
+    //     if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+    //         setTheme("dark");
+    //     }
+    //     else{
+    //         setTheme("light");
+    //     }
+    // },[])
      
     // 2. To switch themes
     useEffect(()=>{
