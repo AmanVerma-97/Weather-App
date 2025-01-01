@@ -50,6 +50,13 @@ function Home(){
         cityRef.current.focus();
     }
 
+    const handleKeySearch=(event)=>{
+        if(event.key==="Enter"){
+            handleSearch();
+        }
+    }
+     
+    
     //Convert time received from API in local time for that zone.
     function convertTimestamp(timestamp,timezone) {
         const sunDate= new Date((timestamp+timezone)*1000 );
@@ -115,16 +122,16 @@ function Home(){
             <span class="text-red-500">Error.</span> Click to see details </button> </Link> :
 
         // Outermost div
-        <div id="outermost" class="bg-gradient-to-r from-cyan-500 via-teal-300 to-blue-500 font-medium font-serif h-screen w-dvw
+        <div id="outermost" class="bg-teal-300 font-medium font-serif h-screen w-dvw pt-2
                     dark:bg-gradient-to-r dark:from-slate-950 dark:via-grey-800 dark:to-slate-900 dark:text-white">
 
             {/* Search bar */}
             <div class="m-auto p-3 flex flex-col md:flex-row items-center gap-4 w-fit bg-transparent shadow-lg shadow-gray-900/75
                         dark:shadow-lg dark:shadow-slate-100/50 mb-8">
                 <div>
-                    <input type="text" class="bg-blue-200 p-2 placeholder-slate-500 font rounded w-60 md:w-80 text-center
+                    <input id="city" type="text" class="bg-blue-200 p-2 placeholder-slate-500 font rounded w-60 md:w-80 text-center
                      dark:text-black dark:bg-slate-200 dark:border-gray-500 dark:hover:border-blue-300 dark:border-2" 
-                    placeholder="Enter city" ref={cityRef} value={inputCity} onChange={handleChange} required/>
+                    placeholder="Enter city" ref={cityRef} value={inputCity} onChange={handleChange} onKeyUp={handleKeySearch} required/>
                     
                 </div>
                 <div>
@@ -145,8 +152,8 @@ function Home(){
 
             {/* Displaying data if API fetch success */}
             { weatherData && aqiData && 
-            <div class="bg-transparent h-auto w-11/12 m-auto  mt-2 flex flex-col items-center gap-6 shadow-xl shadow-gray-900/50
-            md:w-6/12  xl:w-4/12 md:m-auto md:mt-12 dark:shadow-lg dark:shadow-slate-100/50">
+            <div class="bg-white rounded-md h-auto w-10/12 m-auto  mt-2 flex flex-col items-center gap-6 shadow-xl shadow-gray-900/50
+             sm:w-8/12 md:w-6/12  xl:w-4/12 md:m-auto md:mt-12 dark:shadow-lg dark:shadow-slate-100/50 dark:bg-gray-700">
                 <div> <img src="https://cdn-icons-png.flaticon.com/128/562/562511.png" alt="city" class="inline h-8 w-8"/> 
                     <h3 class="font-extrabold inline"> {weatherData.name}</h3></div>
 
@@ -159,8 +166,8 @@ function Home(){
             </div>}
 
             {weatherData && aqiData && 
-            <div class="bg-transparent h-auto w-11/12 mt-8 m-auto flex flex-wrap gap-4 justify-between items-center p-2 font-mono shadow-xl shadow-gray-900/50 
-            md:flex-row md:w-10/12 xl:w-8/12 md:m-auto md:min-h-24 md:mt-12 dark:shadow-lg dark:shadow-slate-100/50">
+            <div class="bg-white rounded-md h-auto w-11/12 mt-8 m-auto flex flex-wrap gap-4 justify-between items-center p-2 font-mono shadow-xl shadow-gray-900/50 
+            md:flex-row md:w-10/12 xl:w-8/12 md:m-auto md:min-h-24 md:mt-12 dark:shadow-lg dark:shadow-slate-100/50 dark:bg-gray-700">
                 <div class="flex gap-2 w-1/3 sm:w-1/4 md:w-auto"> <img src="https://cdn-icons-png.flaticon.com/128/4851/4851827.png" class="h-8 w-8 inline" alt="min-temp"/> 
                 {weatherData.main.temp_min} &deg;C</div>
 
