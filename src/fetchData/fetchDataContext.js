@@ -1,12 +1,15 @@
 //using Context API.
 import { createContext, useContext, useEffect, useState} from "react";
-// import image1 from '../images/clear-day-sky.jpg';
-// import image2 from '../images/fog-night.jpg';
-// import image3 from '../images/lightning-night-rain.jpg';
-// import image4 from '../images/winter-snowfall.jpg';
-// import image5 from '../images/clouds.jpg';
-// import image6 from '../images/rainy-day.jpg';
-// import image7 from '../images/fog-day.jpg';
+import axios from "axios";
+import image1 from '../images/clear-day-sky.jpg';
+import image2 from '../images/fog-night.jpg';
+import image3 from '../images/lightning-night-rain.jpg';
+import image4 from '../images/winter-snowfall.jpg';
+import image5 from '../images/clouds.jpg';
+import image6 from '../images/rainy-day.jpg';
+import image7 from '../images/fog-day.jpg';
+import image8 from '../images/clear-night-sky.jpg';
+import image9 from '../images/clear-evening-sky.jpg';
 
 
 const weatherContext=createContext();
@@ -20,33 +23,70 @@ function FetchDataContext(props) {
     const [city,setCity] = useState("");
     const [weatherData,setWeatherData] = useState(null);
     const [aqiData, setAqiData]= useState(null);
-    // const [background, setBackground]=useState(null);
+    const [timezone, setTimezone]=useState(null);
+    const [localTime, setLocalTime]=useState(null);
+    const [background, setBackground]=useState(image1);
     const [error,setError]=useState(false);
     const {children}=props; //all that use weatherContext.
 
     async function fetchCurrentAQI(city) {
-        const myApiKey="Z/Kmj8smUiWWINArFoYPgg==HgmUNtkig4KMLSxX";
-        const url = `https://api.api-ninjas.com/v1/airquality?city=${city}`;
-        const headers = { 'X-Api-Key': myApiKey };
-        const options = {
-          method: 'GET',
-          headers,
-        };
-      
+        const API_KEY="37947d013f98ab57272fe2d0aadbdfdf";
         try {
-          const response = await fetch(url, options);
-          if (!response.ok) {
-            setAqiData(null);
-            throw new Error(`Error fetching aqi data: ${response.status}`);
+          // Step 1: Get the city's latitude and longitude using the Geocoding API
+          const geoResponse = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`);
+          
+          if (geoResponse.data.length === 0) {
+            setError("City not found");
+            return;
           }
-          const AQIData = await response.json();
-        //   console.log("aqi",AQIData);
-          setAqiData(AQIData);
-          setError(false);
-        } catch (error) {
-        //   console.error('Error:', error);
-          setError(true);
+  
+          const { lat, lon } = geoResponse.data[0];
+  
+          // Step 2: Fetch the AQI using the Air Pollution API
+          const aqiResponse = await axios.get(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+  
+          const aqiValue = aqiResponse.data.list[0].components.pm2_5;
+          // console.log(aqiResponse);
+          
+          setAqiData(aqiValue);
+        } catch (err) {
+          setError("Error fetching AQI data");
+          console.error(err);
         }
+      }
+
+    const fetchCityTime= async(city)=>{ //to get local time of city using timezone
+      
+      const API_KEY="37947d013f98ab57272fe2d0aadbdfdf";
+      try {
+        // Fetch weather data for the city
+        const response = await axios.get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`
+        );
+
+        const timezoneOffset = response.data.timezone;
+        // console.log(timezoneOffset);
+        // Calculate the local time by adding the timezone offset (in seconds)
+        const utcTime = new Date().getTime(); // In milliseconds
+
+        // Calculate local time in milliseconds by adding the timezone offset
+        const localTimeInMilliseconds = utcTime + timezoneOffset * 1000;
+        const timeToSubtract = (5 * 60 * 60 * 1000) + (30 * 60 * 1000); //to subtrcat IST from final time
+        
+        // Create a new Date object for the local time (in UTC)
+        const localDate = new Date(localTimeInMilliseconds-timeToSubtract);
+        // Format the local time
+        console.log("Time", localDate.getHours());
+        setTimezone(localDate.getHours());
+        setLocalTime(localDate);
+        console.log(localDate.toLocaleString().split(",")[1]);
+        
+      } catch (err) {
+        setError("Error fetching time for the city");
+        console.error(err);
+      }
+      
+        
       }
 
     const fetchCurrentWeather= async()=>{
@@ -61,8 +101,13 @@ function FetchDataContext(props) {
             }
             const data= await response.json();
             // console.log("weather:",data);
-            setWeatherData(data); 
+            console.log(data);
+           
+             
             setCity(data.name);
+            fetchCityTime(city);
+
+            setWeatherData(data);
             setError(false);
 
         } catch (error) {
@@ -79,41 +124,50 @@ function FetchDataContext(props) {
         
     },[city]);
 
-    // useEffect(()=>{ //to set background image according to main weather 
-    //     if(weatherData){
-    //         let url;
-    //         const mainWeather = weatherData.weather[0].main;
+    useEffect(()=>{ //to set background image according to main weather 
+        if(weatherData){
+            let url;
+            const mainWeather = weatherData.weather[0].main;
+            const hours=timezone;
+            if(mainWeather==="Clear"){
+              if(hours>=7 && hours<17){
+                url=image1;
+              }
+                else if(hours>=17 && hours<20){
+                  url=image9;
+                }
+                else{
+                  url=image8;
+                }
+            }
+            else if(mainWeather==="Thunderstorm"){
+                  url=image3;
+            }
+            
+            else if(mainWeather==="Rain"){
+                url=image6;
+            }
+            else if(mainWeather==="Snow"){
+                url=image4;
+            }
+            else if(mainWeather==="Haze"){
+                url=image2;
+            }
+            else if(mainWeather==="Clouds"){
+                url=image5;
+            }
+            else{
+                url=image7;
+            }
 
-    //         if(mainWeather==="Clear"){
-    //             url=image1;
-    //         }
-    //         else if(mainWeather==="Thunderstorm"){
-    //             url=image3;
-    //         }
-    //         else if(mainWeather==="Rain"){
-    //             url=image6;
-    //         }
-    //         else if(mainWeather==="Snow"){
-    //             url=image4;
-    //         }
-    //         else if(mainWeather==="Haze"){
-    //             url=image2;
-    //         }
-    //         else if(mainWeather==="Clouds"){
-    //             url=image5;
-    //         }
-    //         else{
-    //             url=image7;
-    //         }
-
-    //         setBackground(url);
-    //     }
-    // },[weatherData]);
+            setBackground(url);
+        }
+    },[weatherData]);
 
     return(
         <>
             {/* <h3> I'am fetchData.</h3> */}
-            <weatherContext.Provider value={{aqiData, city, setCity, weatherData, error, setError, setWeatherData, setAqiData}}>
+            <weatherContext.Provider value={{aqiData, city, setCity, weatherData, error, setError, setWeatherData, setAqiData,background, localTime}}>
                 {children}
             </weatherContext.Provider>
         </>
@@ -123,3 +177,4 @@ function FetchDataContext(props) {
 
 export {useWeatherData};
 export default FetchDataContext;
+

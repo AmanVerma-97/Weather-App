@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useWeatherData } from "../fetchData/fetchDataContext";
 import { Link } from "react-router-dom";
+import night from '../images/clear-night-sky.jpg';
 
 function Home(){
     
     const [inputCity, setInputCity]= useState("");
-    const {setCity, weatherData, aqiData, error} = useWeatherData();
+    const {setCity, weatherData, aqiData, error, background, localTime} = useWeatherData();
     const [aqiColor, setAqiColor]= useState(null);
     const [theme, setTheme]=useState(null);
     const cityRef=useRef("");
@@ -54,6 +55,9 @@ function Home(){
         if(event.key==="Enter"){
             handleSearch();
         }
+        else{
+            setInputCity(event.target.value);
+        }
     }
      
     
@@ -92,19 +96,19 @@ function Home(){
 
         if(aqiData){
             let colorClass;
-            if(aqiData.overall_aqi<50){
+            if(aqiData<50){
                 colorClass="text-green-800";
             }
-            else if(aqiData.overall_aqi<100){
+            else if(aqiData<100){
                 colorClass="text-amber-600";
             }
-            else if(aqiData.overall_aqi<150){
+            else if(aqiData<150){
                 colorClass="text-orange-700";
             }
-            else if(aqiData.overall_aqi<200){
+            else if(aqiData<200){
                 colorClass="text-red-500";
             }
-            else if(aqiData.overall_aqi<300){
+            else if(aqiData<300){
                 colorClass="text-indigo-600";
             }
             else{
@@ -122,12 +126,16 @@ function Home(){
             <span class="text-red-500">Error.</span> Click to see details </button> </Link> :
 
         // Outermost div
-        <div id="outermost" class="bg-teal-300 font-medium font-serif h-screen w-dvw pt-2
-                    dark:bg-gradient-to-r dark:from-slate-950 dark:via-grey-800 dark:to-slate-900 dark:text-white">
+        // <div id="outermost" class="bg-teal-300 font-medium font-serif h-screen w-dvw pt-2
+        //             dark:bg-gradient-to-r dark:from-slate-950 dark:via-grey-800 dark:to-slate-900 dark:text-white">
+        <div id="outermost" class="bg-no-repeat bg-center bg-cover font-medium font-serif h-screen w-dvw pt-2 
+                                dark:bg-black dark:bg-opacity-65 dark:bg-blend-overlay dark:text-white"
+                                style={{backgroundImage: `url(${background})`}}>
+            
 
             {/* Search bar */}
-            <div class="m-auto p-3 flex flex-col md:flex-row items-center gap-4 w-fit bg-transparent shadow-lg shadow-gray-900/75
-                        dark:shadow-lg dark:shadow-slate-100/50 mb-8">
+            <div class="m-auto p-3 flex flex-col md:flex-row items-center gap-4 w-fit bg-transparent 
+                        mb-8">
                 <div>
                     <input id="city" type="text" class="bg-blue-200 p-2 placeholder-slate-500 font rounded w-60 md:w-80 text-center
                      dark:text-black dark:bg-slate-200 dark:border-gray-500 dark:hover:border-blue-300 dark:border-2" 
@@ -143,31 +151,39 @@ function Home(){
             </div>
 
             {/* Light Mode/ Dark Mode */}
-            <div class="absolute top-4 right-6 h-auto w-6 border-2 border-cyan-700 dark:border-gray-500 rounded-md flex justify-center">
+            <div class="absolute top-4 right-6 h-auto w-6 flex justify-center">
                 <button class="bg-transparent m-auto" onClick={handleThemeSwitch}>
                     {theme==="dark"? <img src="https://cdn-icons-png.flaticon.com/128/3073/3073665.png" alt="light-mode" class="h-4 w-4 inline"/>
-                                   : <img src="https://cdn-icons-png.flaticon.com/128/1812/1812660.png" alt="dark-mode" class="h-4 w-4 inline"/> }
+                                   : <img src="https://cdn-icons-png.flaticon.com/128/17037/17037535.png" alt="dark-mode" class="h-4 w-4 inline"/> }
                 </button>
             </div>
-
+            
             {/* Displaying data if API fetch success */}
             { weatherData && aqiData && 
-            <div class="bg-white rounded-md h-auto w-10/12 m-auto  mt-2 flex flex-col items-center gap-6 shadow-xl shadow-gray-900/50
-             sm:w-8/12 md:w-6/12  xl:w-4/12 md:m-auto md:mt-12 dark:shadow-lg dark:shadow-slate-100/50 dark:bg-gray-700">
-                <div> <img src="https://cdn-icons-png.flaticon.com/128/562/562511.png" alt="city" class="inline h-8 w-8"/> 
-                    <h3 class="font-extrabold inline"> {weatherData.name}</h3></div>
+            <div class="bg-white/80 rounded-md h-auto w-10/12 m-auto  mt-2 flex flex-col items-center gap-6 shadow-xl shadow-gray-900/50
+             sm:w-8/12 md:w-6/12  xl:w-4/12 md:m-auto md:mt-12 dark:shadow-lg dark:shadow-slate-100/50 dark:bg-gray-900/75">
+                <div> 
+                    <h3 class="font-extrabold inline text-2xl"> {weatherData.name}</h3>
+                </div>
 
-                <div> <h1 class="font-extrabold text-4xl"> {weatherData.main.temp} &deg;C </h1> </div>
+
+                <div> <h1 class="font-extrabold text-3xl"> {weatherData.main.temp} &deg;C </h1> </div>
 
                 <div><h3 class="font-extrabold"> {weatherData.weather[0].main} </h3></div>
 
                 <div class="font-bold text-lg"> <img src="https://cdn-icons-png.flaticon.com/128/3778/3778496.png" alt="mask" class="inline h-8 w-8"/> 
-                AQI <span id="aqi" className={aqiColor}> {aqiData.overall_aqi} </span> </div>
-            </div>}
+                    AQI <span id="aqi" className={aqiColor}> {aqiData} </span> 
+                </div>
+            
+                <div>
+                    <h3 class="inline text-lg font-bold"> {localTime.toLocaleString()} </h3>
+                </div>
+            </div>
+            }
 
             {weatherData && aqiData && 
-            <div class="bg-white rounded-md h-auto w-11/12 mt-8 m-auto flex flex-wrap gap-4 justify-between items-center p-2 font-mono shadow-xl shadow-gray-900/50 
-            md:flex-row md:w-10/12 xl:w-8/12 md:m-auto md:min-h-24 md:mt-12 dark:shadow-lg dark:shadow-slate-100/50 dark:bg-gray-700">
+            <div class="bg-white/80 rounded-md h-auto w-11/12 mt-8 m-auto flex flex-wrap gap-4 justify-between items-center p-2 font-mono shadow-xl shadow-gray-900/50 
+            md:flex-row md:w-10/12 xl:w-8/12 md:m-auto md:min-h-24 md:mt-12 dark:shadow-lg dark:shadow-slate-100/50 dark:bg-gray-900/75">
                 <div class="flex gap-2 w-1/3 sm:w-1/4 md:w-auto"> <img src="https://cdn-icons-png.flaticon.com/128/4851/4851827.png" class="h-8 w-8 inline" alt="min-temp"/> 
                 {weatherData.main.temp_min} &deg;C</div>
 
