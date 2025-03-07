@@ -12,7 +12,7 @@ function ErrorPage() {
     // setError(false);
     setAqiData(null);
     setWeatherData(null);
-  },[])
+  })
   
   function resetValue(){
     setError(false);

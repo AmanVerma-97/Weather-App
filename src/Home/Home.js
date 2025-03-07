@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useWeatherData } from "../fetchData/fetchDataContext";
 import { Link } from "react-router-dom";
-import night from '../images/clear-night-sky.jpg';
+
 
 function Home(){
     

@@ -143,7 +143,7 @@ function FetchDataContext(props) {
             else if(mainWeather==="Thunderstorm"){
                   url=image3;
             }
-            
+
             else if(mainWeather==="Rain"){
                 url=image6;
             }
@@ -162,7 +162,7 @@ function FetchDataContext(props) {
 
             setBackground(url);
         }
-    },[weatherData]);
+    },[weatherData,timezone]);
 
     return(
         <>
