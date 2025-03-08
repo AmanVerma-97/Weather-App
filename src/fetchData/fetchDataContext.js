@@ -20,7 +20,7 @@ function useWeatherData(){
 
 function FetchDataContext(props) {
     
-    const [city,setCity] = useState("");
+    const [city,setCity] = useState(null);
     const [weatherData,setWeatherData] = useState(null);
     const [aqiData, setAqiData]= useState(null);
     const [timezone, setTimezone]=useState(null);
@@ -76,10 +76,10 @@ function FetchDataContext(props) {
         // Create a new Date object for the local time (in UTC)
         const localDate = new Date(localTimeInMilliseconds-timeToSubtract);
         // Format the local time
-        console.log("Time", localDate.getHours());
+        // console.log("Time", localDate.getHours());
         setTimezone(localDate.getHours());
         setLocalTime(localDate);
-        console.log(localDate.toLocaleString().split(",")[1]);
+        // console.log(localDate.toLocaleString().split(",")[1]);
         
       } catch (err) {
         setError("Error fetching time for the city");
@@ -89,7 +89,10 @@ function FetchDataContext(props) {
         
       }
 
-    const fetchCurrentWeather= async()=>{
+    
+
+    useEffect(()=>{
+      const fetchCurrentWeather= async(city)=>{
         const APIKey= "9f5b97bf1e84c5b6e30e95ea3d00cfa3"; 
         const url=`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}&units=metric`;
 
@@ -104,22 +107,20 @@ function FetchDataContext(props) {
             console.log(data);
            
              
-            setCity(data.name);
+            // setCity(data.name);
             fetchCityTime(city);
-
+            fetchCurrentAQI(city.toUpperCase());
             setWeatherData(data);
             setError(false);
 
-        } catch (error) {
-            // console.log(error);
-            setError(true);
-        }
-    }
+          } catch (error) {
+              // console.log(error);
+              setError(true);
+          }
+      }
 
-    useEffect(()=>{
-        if(city){
-            fetchCurrentWeather();
-            fetchCurrentAQI(city.toUpperCase());
+      if(city){
+            fetchCurrentWeather(city);
         }
         
     },[city]);
